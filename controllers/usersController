@@ -1,8 +1,0 @@
-export const getUsers = (req, res) => {
-
-}
-
-export const getUser = (req, res) => {
-    const { id } = req.params;
-
-}

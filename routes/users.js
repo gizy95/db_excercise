@@ -1,11 +1,15 @@
 import express from 'express';
-import { getUsers, getUser } from '../controllers/usersController.js';
+import { getUsers, getUser, postUser, modifyUser, deleteUser } from '../controllers/usersController.js';
+
 
 
 const usersRouter = express.Router();
 
 
-filmsRouter.get('/', getUsers);
-filmsRouter.get('/:id', getUser);
+usersRouter.get('/', getUsers);
+usersRouter.get('/:id', getUser);
+usersRouter.post('/', postUser);
+usersRouter.put('/:id', modifyUser);
+usersRouter.delete('/:id', deleteUser);
 
 export default usersRouter;
