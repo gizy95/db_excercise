@@ -85,3 +85,17 @@ export const deleteUser = async (req, res) => {
         res.sendStatus(500)
     }
 }
+
+export const getOrdersByUserId = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Fetch orders for the specified user ID
+        const { rows } = await pool.query('SELECT * FROM orders WHERE user_id=$1;', [id]);
+        console.log(rows);
+        res.json(rows);
+    } catch (error) {
+        console.error("Error fetching orders:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
