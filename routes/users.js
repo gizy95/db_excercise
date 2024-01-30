@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUsers, getUser, postUser, modifyUser, deleteUser, getOrdersByUserId } from '../controllers/usersController.js';
+import { getUsers, getUser, postUser, modifyUser, deleteUser, getOrdersByUserId, checkInactiveUser } from '../controllers/usersController.js';
 
 
 
@@ -12,5 +12,6 @@ usersRouter.post('/', postUser);
 usersRouter.put('/:id', modifyUser);
 usersRouter.delete('/:id', deleteUser);
 usersRouter.get('/:id/orders', getOrdersByUserId);
+usersRouter.put('/:id/check-inactive', checkInactiveUser);
 
 export default usersRouter;

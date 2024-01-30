@@ -99,3 +99,23 @@ export const getOrdersByUserId = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
+export const checkInactiveUser = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const ordersQuery = await pool.query('SELECT COUNT(*) FROM orders WHERE user_id = $1;', [id]);
+        const orderCount = parseInt(ordersQuery.rows[0].count);
+
+        if (orderCount === 0) {
+            const { rows } = await pool.query('UPDATE users SET active = false WHERE id = $1 RETURNING *;', [id]);
+            console.log(rows);
+            res.json({ message: 'User set as inactive' });
+        } else {
+            res.json({ message: 'User has orders and remains active' });
+        }
+    } catch (error) {
+        console.error("Error checking inactive user:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
