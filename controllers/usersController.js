@@ -1,4 +1,16 @@
 import { pool } from "../db/pool.js";
+import { validationResult, check } from 'express-validator';
+
+const postUserValidationRules = [
+    check('fName').isString(),
+    check('lName').isString(),
+    check('age').isNumeric(),
+    check('active').isBoolean(),
+];
+
+const modifyUserValidationRules = [
+    check('age').isNumeric(),
+];
 
 
 
@@ -29,6 +41,12 @@ export const getUser = async (req, res) => {
 
 export const postUser = async (req, res) => {
     try {
+        await Promise.all(postUserValidationRules.map(validation => validation.run(req)));
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
 
         const { fName, lName, age, active } = req.body;
         const { rows } = await pool.query('INSERT INTO users (first_name, last_name, age,active) VALUES ($1, $2, $3,$4) RETURNING *', [fName, lName, age, active]);
@@ -43,6 +61,12 @@ export const modifyUser = async (req, res) => {
     const { id } = req.params;
 
     try {
+        await Promise.all(modifyUserValidationRules.map(validation => validation.run(req)));
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
         const { age } = req.body;
         const { rows } = await pool.query('UPDATE users SET age=$1 WHERE id=$2 RETURNING *', [age, id]);
         res.status(200).json(rows[0])
